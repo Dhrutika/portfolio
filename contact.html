@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Dhrutika Rathod</title>
+<meta name="description" content="Get in touch with Dhrutika Rathod.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,680&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><a href="index.html" style="text-decoration:none; color:inherit;">Dhrutika<span>.</span>Rathod</a></div>
+    <div class="navlinks">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="blog.html">Blog</a>
+    </div>
+    <a class="nav-cta" href="contact.html">Get in touch</a>
+  </div>
+</nav>
+
+<header class="contact-hero">
+  <div class="wrap">
+    <div class="hero-eyebrow"><span class="dot"></span>Get in touch</div>
+    <h1>Have a project, a role, or an idea worth building well?</h1>
+    <p>Send a message directly below, or reach out on LinkedIn / GitHub. I usually reply within a couple of days.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="contact-layout">
+
+      <div>
+        <!--
+          This form uses Formspree (https://formspree.io) — a free service that emails
+          form submissions straight to your inbox, with zero backend code needed.
+
+          To activate it:
+          1. Create a free account at https://formspree.io
+          2. Create a new form and copy the endpoint it gives you
+             (looks like https://formspree.io/f/xxxxxxxx)
+          3. Replace YOUR_FORM_ID below with that ID.
+        -->
+        <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="_replyto" required>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <input type="hidden" name="_subject" value="New message from portfolio site">
+          <button type="submit" class="submit-btn">Send message</button>
+          <p class="form-note">Handled by Formspree — no server or database needed. See the comment in this page's source for one-time setup.</p>
+        </form>
+      </div>
+
+      <div class="contact-side">
+        <h3>Other ways to reach me</h3>
+        <div class="cred-item"><div class="t1">LinkedIn</div><div class="t2"><a href="https://www.linkedin.com/in/dhrutikarathod" target="_blank" rel="noopener">/in/dhrutikarathod</a></div></div>
+        <div class="cred-item"><div class="t1">GitHub</div><div class="t2"><a href="https://github.com/Dhrutika" target="_blank" rel="noopener">/Dhrutika</a></div></div>
+        <div class="cred-item"><div class="t1">Location</div><div class="t2">Perth, Western Australia</div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-bottom">
+      <div>© <span id="year"></span> Dhrutika Rathod. Perth, Western Australia.</div>
+      <div>Built with care, one release at a time.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

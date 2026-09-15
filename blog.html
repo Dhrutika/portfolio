@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog — Dhrutika Rathod</title>
+<meta name="description" content="Notes on .NET, Azure, Angular and AI-assisted development from Dhrutika Rathod.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,680&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><a href="index.html" style="text-decoration:none; color:inherit;">Dhrutika<span>.</span>Rathod</a></div>
+    <div class="navlinks">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#experience">Experience</a>
+      <a href="index.html#skills">Skills</a>
+      <a href="blog.html">Blog</a>
+    </div>
+    <a class="nav-cta" href="contact.html">Get in touch</a>
+  </div>
+</nav>
+
+<header class="blog-hero">
+  <div class="wrap">
+    <div class="hero-eyebrow"><span class="dot"></span>Blog</div>
+    <h1>Notes on .NET, Azure &amp; AI-assisted development</h1>
+    <p>Write-ups on architecture decisions, Angular migrations, cloud integrations, and how I'm using AI tools to build faster without cutting corners.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap-narrow">
+    <div class="post-list">
+
+      <a class="post-card" href="blog/hello-world.html">
+        <div class="post-date mono">SEP 2026</div>
+        <div>
+          <div class="post-title">Hello, world — why I'm starting this blog</div>
+          <div class="post-excerpt">A short note on what this space is for, and the kind of engineering write-ups you can expect: architecture decisions, migrations, and AI-assisted development in practice.</div>
+          <div class="post-tags">
+            <span class="tag">Meta</span><span class="tag">Career</span>
+          </div>
+        </div>
+      </a>
+
+      <!--
+        To add a new post:
+        1. Copy blog/hello-world.html to blog/your-post-slug.html and edit its content.
+        2. Copy the <a class="post-card"> block above, update the href, date, title, excerpt and tags.
+        3. Paste it here, above the oldest post, so newest posts stay on top.
+      -->
+
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-cta">
+      <div class="sec-eyebrow mono">Let's talk</div>
+      <h2>Have a project, a role, or an idea worth building well?</h2>
+      <div class="contact-links">
+        <a class="btn btn-primary" style="background:var(--ink); color:var(--paper);" href="contact.html">Send a message</a>
+        <a class="btn btn-ghost" style="border-color:var(--line); color:var(--ink);" href="https://www.linkedin.com/in/dhrutikarathod" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        <a class="btn btn-ghost" style="border-color:var(--line); color:var(--ink);" href="https://github.com/Dhrutika" target="_blank" rel="noopener">View GitHub</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© <span id="year"></span> Dhrutika Rathod. Perth, Western Australia.</div>
+      <div>Built with care, one release at a time.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
