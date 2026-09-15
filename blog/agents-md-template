@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Working CLAUDE.md/AGENTS.md Template You Can Copy Today | Dhrutika Rathod</title>
+<meta name="description" content="A copy-pasteable CLAUDE.md/AGENTS.md template with real Preferred/Avoid examples in JS and .NET, plus how to verify the file is actually working.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,680&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .post-body pre {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 20px 24px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 20px 0;
+  }
+  .post-body code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85em;
+  }
+  .post-body :not(pre) > code {
+    background: var(--line, #eee);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .post-body h3 {
+    margin-top: 36px;
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><a href="../index.html" style="text-decoration:none; color:inherit;">Dhrutika<span>.</span>Rathod</a></div>
+    <div class="navlinks">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../blog.html">Blog</a>
+    </div>
+    <a class="nav-cta" href="../contact.html">Get in touch</a>
+  </div>
+</nav>
+
+<header class="post-hero">
+  <div class="wrap-narrow">
+    <div class="post-date mono">SEPTEMBER 2026</div>
+    <h1>A Working CLAUDE.md/AGENTS.md Template You Can Copy Today</h1>
+  </div>
+</header>
+
+<article class="post-body">
+  <div class="wrap-narrow">
+
+    <p>If you've added a <code>CLAUDE.md</code> or <code>AGENTS.md</code> file to your repo and felt like your coding agent still ignores half of it, you're not alone. Most of these files are just vague prose — "write clean code," "follow best practices," "use good error handling" — and vague prose doesn't change agent behavior any more than it changes a new hire's behavior on day one.</p>
+
+    <p>The fix isn't a longer file. It's a <em>differently structured</em> one. Below is a template you can copy straight into your repo today, plus the reasoning behind each section so you're not just cargo-culting it.</p>
+
+    <h2>Why most AGENTS.md files fail</h2>
+
+    <p>Here's the pattern almost everyone starts with:</p>
+
+<pre><code>## Code style
+- Write clean, maintainable code
+- Use good error handling
+- Follow best practices</code></pre>
+
+    <p>None of this is wrong, exactly. It's just useless to a model. "Good error handling" means nothing without a concrete shape to imitate. Compare that to this:</p>
+
+<pre><code>## Error handling
+
+### Avoid
+catch (e) {
+  console.log(e);
+}
+
+### Preferred
+catch (e) {
+  logger.error('checkout.payment_failed', { orderId, cause: e });
+  throw new PaymentError(orderId, e);
+}</code></pre>
+
+    <p>The second version gives the model an actual pattern to pattern-match against — a logger call with a namespaced event, structured metadata, and a typed error thrown upward. That's the single biggest lever in this whole exercise: <strong>replace adjectives with code blocks.</strong></p>
+
+    <h2>The anatomy of a file that actually works</h2>
+
+    <p>A good context file has six parts, in this order:</p>
+
+    <ul>
+      <li><strong>Metadata header</strong> — so humans (and eventually you, in six months) know if the file is still trustworthy</li>
+      <li><strong>Project context</strong> — stack, architecture, and the non-obvious constraints a new engineer wouldn't guess</li>
+      <li><strong>Coding conventions</strong> — Preferred/Avoid blocks, not adjectives</li>
+      <li><strong>Testing requirements</strong> — what "done" actually means in your repo</li>
+      <li><strong>Do-not-touch list</strong> — the fastest way to prevent a confidently wrong 200-line diff</li>
+      <li><strong>Command reference</strong> — how to build, test, and lint, so the agent isn't guessing or hallucinating flags</li>
+    </ul>
+
+    <p>Let's build the file section by section.</p>
+
+    <h3>1. Metadata header</h3>
+
+<pre><code>---
+last_updated: 2026-09-14
+owner: platform-team
+scope: global
+review_cadence: quarterly
+---</code></pre>
+
+    <p>This looks like overhead, but it's the difference between a file that rots silently and one that gets maintained. When a rule looks outdated, whoever finds it knows exactly who to ping. Without this, stale context files just accumulate contradictions nobody catches until an agent trips on one.</p>
+
+    <h3>2. Project context</h3>
+
+    <p>This section exists to state the things a competent engineer would otherwise have to reverse-engineer from the codebase — especially anything that goes <em>against</em> the obvious default.</p>
+
+<pre><code>## Project context
+
+- Stack: Node.js 20, Express, PostgreSQL (raw SQL via `pg`, no ORM — see ADR-014)
+- Monorepo managed with pnpm workspaces
+- Auth: sessions via `iron-session`, not JWTs — do not introduce JWT-based auth
+- All API responses follow the envelope in `src/lib/response.ts`; never return raw objects from route handlers</code></pre>
+
+    <p>Notice the ORM line. Any model trained broadly will default to reaching for an ORM the moment it touches a database. Stating the constraint <em>and</em> pointing to the reasoning (an ADR link) heads that off before it happens.</p>
+
+    <h3>3. Coding conventions (Preferred/Avoid blocks)</h3>
+
+    <p>Pick your 3-5 highest-value conventions — the ones that actually recur in every PR — rather than trying to cover everything. More isn't better here; it's context rot.</p>
+
+    <p><strong>API responses</strong></p>
+    <p>Avoid:</p>
+<pre><code>res.json({ id: user.id, name: user.name });</code></pre>
+    <p>Preferred:</p>
+<pre><code>res.json(successResponse({ id: user.id, name: user.name }));</code></pre>
+
+    <p><strong>Async error handling</strong></p>
+    <p>Avoid:</p>
+<pre><code>app.get('/users/:id', async (req, res) => {
+  const user = await getUser(req.params.id);
+  res.json(user);
+});</code></pre>
+    <p>Preferred:</p>
+<pre><code>app.get('/users/:id', asyncHandler(async (req, res) => {
+  const user = await getUser(req.params.id);
+  res.json(successResponse(user));
+}));</code></pre>
+
+    <p><strong>Naming</strong></p>
+    <p>Avoid:</p>
+<pre><code>const d = new Date();
+const u = await getUser(id);
+function calc(x, y) { return x * y * 0.08; }</code></pre>
+    <p>Preferred:</p>
+<pre><code>const requestTimestamp = new Date();
+const user = await getUser(id);
+function calculateSalesTax(subtotal, taxRate = 0.08) {
+  return subtotal * taxRate;
+}</code></pre>
+
+    <p><strong>Dependency access</strong></p>
+    <p>Avoid:</p>
+<pre><code>import { db } from '../../../lib/db';
+
+export async function getOrders(userId) {
+  return db.query('SELECT * FROM orders WHERE user_id = $1', [userId]);
+}</code></pre>
+    <p>Preferred:</p>
+<pre><code>import { OrdersRepository } from './orders.repository';
+
+export async function getOrders(userId, ordersRepo = new OrdersRepository()) {
+  return ordersRepo.findByUserId(userId);
+}</code></pre>
+    <p>(Repos are injectable so tests can pass a fake — see <code>tests/api/orders.test.ts</code> for the pattern.)</p>
+
+    <p>Each pair takes about 30 seconds to write and saves you from re-explaining the same thing in code review, repeatedly, forever.</p>
+
+    <h3>4. Testing requirements</h3>
+
+    <p>Be specific about what "done" means. "Write tests" is not a requirement an agent (or a junior engineer) can act on.</p>
+
+<pre><code>## Testing
+
+- Every new route handler needs an integration test in `tests/api/`, following the pattern in `tests/api/users.test.ts`
+- Run `pnpm test:unit` before considering any change complete
+- Do not mock the database in integration tests — use the test containers setup in `tests/setup.ts`
+- Minimum coverage for new files: 80% (checked in CI, not enforced locally, but treat it as a gate)</code></pre>
+
+    <h3>5. Do-not-touch list</h3>
+
+    <p>This is the highest-leverage section for preventing damage, and the one most files skip entirely.</p>
+
+<pre><code>## Do not touch
+
+- `migrations/` — migrations are hand-reviewed only; never generate or edit these
+- `src/legacy/billing/` — frozen code pending a rewrite; bug fixes only, no refactors
+- `.github/workflows/` — CI changes require a platform-team review; flag instead of editing directly</code></pre>
+
+    <p>If you've ever had an agent "helpfully" refactor a file that was explicitly untouchable, this section is why it happened — nobody told it not to.</p>
+
+    <h3>6. Command reference</h3>
+
+<pre><code>## Commands
+
+- Install: `pnpm install`
+- Run dev server: `pnpm dev`
+- Run all tests: `pnpm test`
+- Run a single test file: `pnpm test -- tests/api/users.test.ts`
+- Lint: `pnpm lint`
+- Type check: `pnpm typecheck`</code></pre>
+
+    <p>Trivial, but it removes an entire category of wasted agent turns spent guessing your package.json scripts.</p>
+
+    <h2>The full template</h2>
+
+    <p>Here's everything assembled — copy this, then replace every line with your own project's specifics.</p>
+
+<pre><code>---
+last_updated: YYYY-MM-DD
+owner: team-name
+scope: global
+review_cadence: quarterly
+---
+
+## Project context
+
+- Stack: [languages, frameworks, database]
+- Architecture: [monorepo/polyrepo, key services]
+- Non-obvious constraints: [things that go against the default assumption]
+
+## Conventions
+
+### [Convention name]
+Avoid:
+[bad example]
+
+Preferred:
+[good example]
+
+(repeat for 3-5 highest-value conventions)
+
+## Testing
+
+- [what every change requires]
+- [how to run tests]
+- [coverage or quality gates]
+
+## Do not touch
+
+- [path]: [reason]
+- [path]: [reason]
+
+## Commands
+
+- Install: [command]
+- Dev: [command]
+- Test: [command]
+- Lint: [command]</code></pre>
+
+    <h2>A real-world example: ASP.NET Core project</h2>
+
+    <p>The template above is deliberately generic. Here's what it looks like filled in for an actual project — a mid-sized ASP.NET Core Web API with Entity Framework Core and a Clean Architecture-style layout. Use this as a second reference point alongside the generic template; between the two you should be able to adapt this to pretty much any stack.</p>
+
+<pre><code>---
+last_updated: 2026-09-14
+owner: payments-team
+scope: global
+review_cadence: quarterly
+---
+
+## Project context
+
+- Stack: .NET 8, ASP.NET Core Web API, EF Core 8, SQL Server
+- Architecture: Clean Architecture — `Api/`, `Application/`, `Domain/`, `Infrastructure/`
+- CQRS via MediatR — every write is a `Command`, every read is a `Query`, handled in `Application/`
+- Do not call EF Core directly from controllers — always go through a MediatR handler
+- Validation via FluentValidation, wired in automatically through a MediatR pipeline behavior
+- Dependency injection only — no `new SomeService()` inside business logic; register in `Program.cs`</code></pre>
+
+    <p><strong>Controllers stay thin</strong></p>
+    <p>Avoid:</p>
+<pre><code>[HttpPost]
+public async Task&lt;IActionResult&gt; CreateOrder(CreateOrderDto dto)
+{
+    var order = new Order { CustomerId = dto.CustomerId, Total = dto.Total };
+    _dbContext.Orders.Add(order);
+    await _dbContext.SaveChangesAsync();
+    return Ok(order);
+}</code></pre>
+    <p>Preferred:</p>
+<pre><code>[HttpPost]
+public async Task&lt;IActionResult&gt; CreateOrder(CreateOrderCommand command)
+{
+    var result = await _mediator.Send(command);
+    return CreatedAtAction(nameof(GetOrder), new { id = result.OrderId }, result);
+}</code></pre>
+    <p>Controllers only translate HTTP in and out. All logic lives in the handler.</p>
+
+    <p><strong>Nullable reference handling</strong></p>
+    <p>Avoid:</p>
+<pre><code>public string GetCustomerName(int id)
+{
+    var customer = _repository.Find(id);
+    return customer.Name; // throws NullReferenceException if not found
+}</code></pre>
+    <p>Preferred:</p>
+<pre><code>public async Task&lt;Result&lt;string&gt;&gt; GetCustomerNameAsync(int id)
+{
+    var customer = await _repository.FindAsync(id);
+    return customer is null
+        ? Result.Failure&lt;string&gt;($"Customer {id} not found")
+        : Result.Success(customer.Name);
+}</code></pre>
+    <p>We use the <code>Result&lt;T&gt;</code> pattern (see <code>Domain/Common/Result.cs</code>) instead of throwing for expected failure cases. Reserve exceptions for truly unexpected states.</p>
+
+    <p><strong>Async naming and cancellation</strong></p>
+    <p>Avoid:</p>
+<pre><code>public Task&lt;List&lt;Order&gt;&gt; GetOrders(int customerId)
+{
+    return _dbContext.Orders.Where(o =&gt; o.CustomerId == customerId).ToListAsync();
+}</code></pre>
+    <p>Preferred:</p>
+<pre><code>public Task&lt;List&lt;Order&gt;&gt; GetOrdersAsync(int customerId, CancellationToken cancellationToken)
+{
+    return _dbContext.Orders
+        .Where(o =&gt; o.CustomerId == customerId)
+        .ToListAsync(cancellationToken);
+}</code></pre>
+    <p>Every async method ends in <code>Async</code> and accepts a <code>CancellationToken</code> as the last parameter — this is enforced by an analyzer, so missing it will fail the build, not just review.</p>
+
+<pre><code>## Testing
+
+- Every new `Command`/`Query` handler needs a test in `Application.Tests/`, using the in-memory EF Core provider pattern in `TestBase.cs`
+- Controller-level tests use `WebApplicationFactory` — see `Api.Tests/OrdersControllerTests.cs`
+- Run `dotnet test` before considering any change complete
+- Do not mock `DbContext` directly; use the SQLite in-memory provider configured in `TestBase.cs`
+
+## Do not touch
+
+- `Migrations/` — EF Core migrations are hand-reviewed only; never hand-edit a generated migration
+- `Infrastructure/Legacy/` — frozen pending the billing-system rewrite; bug fixes only
+- `appsettings.Production.json` — never edit directly; changes go through the deployment pipeline config
+
+## Commands
+
+- Restore: `dotnet restore`
+- Run API locally: `dotnet run --project Api`
+- Run all tests: `dotnet test`
+- Add a migration: `dotnet ef migrations add &lt;Name&gt; --project Infrastructure --startup-project Api`
+- Format check: `dotnet format --verify-no-changes`</code></pre>
+
+    <p>A few things worth noticing about this version versus the generic one:</p>
+
+    <ul>
+      <li>The <strong>CQRS/MediatR rule</strong> in Project Context is the single highest-leverage line in the whole file — without it, an agent trained on typical ASP.NET tutorials will default to injecting <code>DbContext</code> straight into a controller, which is exactly the pattern this team is trying to avoid.</li>
+      <li>The <strong><code>Result&lt;T&gt;</code> pattern</strong> example matters more than it looks — .NET code samples online overwhelmingly favor exceptions for control flow, so this file has to actively counteract that default with a concrete example, not just a rule stated in words.</li>
+      <li>The <strong>analyzer-enforced convention</strong> (async naming + <code>CancellationToken</code>) is worth calling out explicitly in the file even though it's also enforced by tooling — it saves the agent a wasted turn discovering the build failure itself, and it explains <em>why</em> the rule exists rather than just <em>that</em> it exists.</li>
+    </ul>
+
+    <h2>How to verify your file is actually pulling weight</h2>
+
+    <p>Don't just ship this and assume it's working. Run a five-minute experiment:</p>
+
+    <ol>
+      <li>Pick a real, moderately complex task from your backlog.</li>
+      <li>Give it to your agent with the context file temporarily renamed/removed.</li>
+      <li>Give it the exact same prompt with the file restored.</li>
+      <li>Diff the two outputs.</li>
+    </ol>
+
+    <p>If the two diffs look nearly identical, your file isn't doing anything — go back and turn more of your prose into Preferred/Avoid code blocks. If the second run correctly follows a convention the first one violated, you've got a working file.</p>
+
+    <h2>Common mistakes to avoid</h2>
+
+    <ul>
+      <li><strong>Too long.</strong> A 500-line context file loaded on every single turn is context rot in disguise — the model's attention degrades the more irrelevant material it has to wade through. Keep it to your highest-value rules, not everything you can think of.</li>
+      <li><strong>Duplicating the README.</strong> If it's already documented elsewhere for humans, link to it instead of restating it.</li>
+      <li><strong>Never updated.</strong> A stale "do not touch" list that references a file that no longer exists is worse than no list at all — it teaches the team to ignore the file entirely. The metadata header exists specifically so someone notices when this happens.</li>
+    </ul>
+
+    <h2>Wrap-up</h2>
+
+    <p>The difference between a context file that gets ignored and one that actually shapes agent behavior isn't length or thoroughness — it's specificity. Adjectives don't transfer; code blocks do. Start with the six sections above, keep it lean, and run the five-minute verification test before you assume it's working.</p>
+
+    <p style="margin-top:48px;"><a class="back-link" href="../blog.html">← Back to all posts</a></p>
+
+  </div>
+</article>
+
+<footer id="contact">
+  <div class="wrap">
+    <div class="contact-cta">
+      <div class="sec-eyebrow mono">Let's talk</div>
+      <h2>Have a project, a role, or an idea worth building well?</h2>
+      <div class="contact-links">
+        <a class="btn btn-primary" style="background:var(--ink); color:var(--paper);" href="../contact.html">Send a message</a>
+        <a class="btn btn-ghost" style="border-color:var(--line); color:var(--ink);" href="https://www.linkedin.com/in/dhrutikarathod" target="_blank" rel="noopener">Connect on LinkedIn</a>
+        <a class="btn btn-ghost" style="border-color:var(--line); color:var(--ink);" href="https://github.com/Dhrutika" target="_blank" rel="noopener">View GitHub</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <div>© <span id="year"></span> Dhrutika Rathod. Perth, Western Australia.</div>
+      <div>Built with care, one release at a time.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
